@@ -17,7 +17,7 @@ const ProyectoState = props => {
   const proyectos = [
     {id: 1, nombre: "Portfolio"},
     {id: 2, nombre: "E-commerce"},
-    {id: 5, nombre: "React practica"},
+    {id: 3, nombre: "React practica"},
   ]
 
   const initialState = {
