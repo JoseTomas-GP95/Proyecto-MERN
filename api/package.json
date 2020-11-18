@@ -1,0 +1,20 @@
+{
+  "name": "merntastapi",
+  "version": "1.0.0",
+  "description": "base de datos de mi proyecto",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon ."
+  },
+  "author": "jose tomas gonzalez padron",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.15"
+  }
+}
