@@ -7,15 +7,15 @@ const app = express();
 // Conectar a la base de datos
 conectarDB();
 
+// Habilitar express.json. (sustituye al bodyparser)
+app.use(express.json({ extended: true }))
+
 // Importando rutas
 app.use("/api/usuarios", require("./routes/usuarios"));
 
-const PORT = process.env.PORT || 4000;
+const port = process.env.PORT || 4000;
 
-app.post("/", (req, res) => {
-  res.send("hola mundo")
-})
-
-app.listen(PORT, () => {
-  console.log(`El servidor corre en el puerto ${PORT}`)
+// arrancar la app
+app.listen(port, () => {
+  console.log(`El servidor corre en el puerto ${port}`)
 })
