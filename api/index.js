@@ -13,9 +13,9 @@ app.use(express.json({ extended: true }))
 // Importando rutas
 app.use("/api/usuarios", require("./routes/usuarios"));
 
-const port = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4000;
 
 // arrancar la app
-app.listen(port, () => {
-  console.log(`El servidor corre en el puerto ${port}`)
+app.listen(PORT, () => {
+  console.log(`El servidor corre en el puerto ${PORT}`)
 })
