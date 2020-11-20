@@ -49,6 +49,6 @@ const { password } = req.body;
 
   } catch(error) {
       console.log(error)
-      res.status(400).send("Se ha presentado un error");
+      res.status(400).send("El usuario ya existe");
   }
 }
