@@ -1,74 +1,90 @@
-import React, { useState, useContext } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import proyectoContext from "../../context/proyectos/proyectoContext";
 
 const NuevoProyecto = () => {
-
-  // Obteniendo el state del formulario en proyectoState.js
+  // Obtener el state del formulario
   const proyectosContext = useContext(proyectoContext);
-  const { formulario, errorformulario, mostrarFormulario, agregarProyecto, validarError } = proyectosContext
+  const {
+    formulario,
+    errorformulario,
+    mostrarFormulario,
+    agregarProyecto,
+    mostrarError,
+  } = proyectosContext;
 
-const [proyecto, guardarProyecto] = useState({
-  nombre: "",
-});
-const {nombre} = proyecto;
+  // State para Proyecto
+  const [proyecto, guardarProyecto] = useState({
+    nombre: "",
+  });
 
-const onChange = (e) => {
-  guardarProyecto({
-    ...proyecto,
-    [e.target.name] : e.target.value
-  })
-}
-const onSubmit = (e) => {
-  e.preventDefault();
-  
-  //validar
-  if(nombre === "") {
-    validarError();
-    return;
-  }
+  // Extraer nombre de proyecto
+  const { nombre } = proyecto;
 
-  // Reiniciar Formulario
-  guardarProyecto({
-    nombre: ""
-  })
+  // Lee los contenidos del input
+  const onChangeProyecto = (e) => {
+    guardarProyecto({
+      ...proyecto,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  agregarProyecto(proyecto)
-}
+  // Cuando el usuario envia un proyecto
+  const onSubmitProyecto = (e) => {
+    e.preventDefault();
+
+    // Validar el proyecto
+    if (nombre === "") {
+      mostrarError();
+      return;
+    }
+
+    // agregar al state
+    agregarProyecto(proyecto);
+
+    // Reiniciar el form
+    guardarProyecto({
+      nombre: "",
+    });
+  };
+
+  // Mostrar el formulario
+  const onClickFormulario = () => {
+    mostrarFormulario();
+  };
 
   return (
-    <>
-      <button 
-      className="btn btn-block btn-primario"
-      onClick={mostrarFormulario}
+    <Fragment>
+      <button
+        type="button"
+        className="btn btn-block btn-primario"
+        onClick={onClickFormulario}
       >
         Nuevo Proyecto
       </button>
 
-      {
-        formulario ?
-        (
-          <form 
-        className="formulario-nuevo-proyecto"
-        onSubmit={onSubmit}
-        >
-        <input
-          type="text"
-          className="input-text"
-          placeholder="Nombre Proyecto"
-          name="nombre"
-          value={nombre}
-          onChange={onChange}
-        />
+      {formulario ? (
+        <form className="formulario-nuevo-proyecto" onSubmit={onSubmitProyecto}>
+          <input
+            type="text"
+            className="input-text"
+            placeholder="Nombre Proyecto"
+            name="nombre"
+            value={nombre}
+            onChange={onChangeProyecto}
+          />
 
-        <input
-          type="submit"
-          className="btn btn-block btn-primario"
-          value="Agregar Proyecto"
-        />
-      </form>
-        ) : null }
-    {errorformulario ? <p className="mensaje error">El nombre del proyecto es obligatorio</p> : null}
-    </>
+          <input
+            type="submit"
+            className="btn btn-primario btn-block"
+            value="Agregar Proyecto"
+          />
+        </form>
+      ) : null}
+
+      {errorformulario ? (
+        <p className="mensaje error">El nombre del Proyecto es obligatorio</p>
+      ) : null}
+    </Fragment>
   );
 };
 
