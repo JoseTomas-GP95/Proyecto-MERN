@@ -4,20 +4,20 @@ const TareaSchema = mongoose.Schema({
   nombre: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   estado: {
     type: Boolean,
-    default: false
+    default: false,
   },
   creado: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   proyecto: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Proyecto"
+    ref: "Proyecto",
   },
-})
+});
 
 module.exports = mongoose.model("Tarea", TareaSchema);
