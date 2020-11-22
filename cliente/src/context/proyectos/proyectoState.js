@@ -1,81 +1,118 @@
-import React, { useReducer } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useReducer } from "react";
+
 import proyectoContext from "./proyectoContext";
 import proyectoReducer from "./proyectoReducer";
-import { 
-  FORMULARIO_PROYECTO, 
-  OBTENER_PROYECTO,
-  AGREGAR_PROYECTO, 
+import {
+  FORMULARIO_PROYECTO,
+  OBTENER_PROYECTOS,
+  AGREGAR_PROYECTO,
+  PROYECTO_ERROR,
   VALIDAR_FORMULARIO,
   PROYECTO_ACTUAL,
-  ELIMINAR_PROYECTO
-} from "../../types/index";
+  ELIMINAR_PROYECTO,
+} from "../../types";
 
+import clienteAxios from "../../config/axios";
 
-const ProyectoState = props => {
-
-  const proyectos = [
-    {id: 1, nombre: "Portfolio"},
-    {id: 2, nombre: "E-commerce"},
-    {id: 3, nombre: "React practica"},
-  ]
-
+const ProyectoState = (props) => {
   const initialState = {
-    proyectos : [],
-    formulario : false,
+    proyectos: [],
+    formulario: false,
     errorformulario: false,
     proyecto: null,
-  }
+    mensaje: null,
+  };
 
   // Dispatch para ejecutar las acciones
-  const [state, dispatch] = useReducer(proyectoReducer, initialState)
+  const [state, dispatch] = useReducer(proyectoReducer, initialState);
 
   // Serie de funciones para el CRUD
   const mostrarFormulario = () => {
     dispatch({
-    type: FORMULARIO_PROYECTO
-    })
-  }
+      type: FORMULARIO_PROYECTO,
+    });
+  };
 
-  // funcion para obtener los proyectos
-  const obtenerProyecto = () => {
-    dispatch({
-    type: OBTENER_PROYECTO,
-    payload: proyectos,
-    })
-  }
+  // Obtener los proyectos
+  const obtenerProyectos = async () => {
+    try {
+      const resultado = await clienteAxios.get("/api/proyectos");
 
-    // funcion para agregar un nuevo proyecto
-    const agregarProyecto = proyecto => {
-      proyecto.id = uuidv4();
+      dispatch({
+        type: OBTENER_PROYECTOS,
+        payload: resultado.data.proyectos,
+      });
+    } catch (error) {
+      const alerta = {
+        msg: "Hubo un error",
+        categoria: "alerta-error",
+      };
+
+      dispatch({
+        type: PROYECTO_ERROR,
+        payload: alerta,
+      });
+    }
+  };
+
+  // Agregar nuevo proyecto
+  const agregarProyecto = async (proyecto) => {
+    try {
+      const resultado = await clienteAxios.post("/api/proyectos", proyecto);
+      console.log(resultado);
+      // Insertar el proyecto en el state
       dispatch({
         type: AGREGAR_PROYECTO,
-        payload: proyecto
-      })
+        payload: resultado.data,
+      });
+    } catch (error) {
+      const alerta = {
+        msg: "Hubo un error",
+        categoria: "alerta-error",
+      };
+
+      dispatch({
+        type: PROYECTO_ERROR,
+        payload: alerta,
+      });
     }
+  };
 
-  // Valida que el formulario se llene bien
-  const validarError = () => {
+  // Valida el formulario por errores
+  const mostrarError = () => {
     dispatch({
-    type: VALIDAR_FORMULARIO,
-    })
-  }
+      type: VALIDAR_FORMULARIO,
+    });
+  };
 
-  // Traer el proyecto al que el usuario dio click 
-  const proyectoActual = proyectoId => {
+  // Selecciona el Proyecto que el usuario dio click
+  const proyectoActual = (proyectoId) => {
     dispatch({
-    type: PROYECTO_ACTUAL,
-    payload: proyectoId
-    })
-  }
+      type: PROYECTO_ACTUAL,
+      payload: proyectoId,
+    });
+  };
 
-  // Funcion que elimina un proyecto
-  const eliminarProyecto = proyectoId => {
-    dispatch({
-    type: ELIMINAR_PROYECTO,
-    payload: proyectoId
-    })
-  }
+  // Elimina un proyecto
+  const eliminarProyecto = async (proyectoId) => {
+    try {
+      await clienteAxios.delete(`/api/proyectos/${proyectoId}`);
+      dispatch({
+        type: ELIMINAR_PROYECTO,
+        payload: proyectoId,
+      });
+    } catch (error) {
+      const alerta = {
+        msg: "Hubo un error",
+        categoria: "alerta-error",
+      };
+
+      dispatch({
+        type: PROYECTO_ERROR,
+        payload: alerta,
+      });
+    }
+  };
 
   return (
     <proyectoContext.Provider
@@ -84,18 +121,18 @@ const ProyectoState = props => {
         formulario: state.formulario,
         errorformulario: state.errorformulario,
         proyecto: state.proyecto,
+        mensaje: state.mensaje,
         mostrarFormulario,
-        obtenerProyecto,
+        obtenerProyectos,
         agregarProyecto,
-        validarError, 
+        mostrarError,
         proyectoActual,
-        eliminarProyecto
+        eliminarProyecto,
       }}
     >
       {props.children}
     </proyectoContext.Provider>
-  )
-}
+  );
+};
 
 export default ProyectoState;
-
